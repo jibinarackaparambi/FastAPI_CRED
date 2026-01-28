@@ -48,3 +48,27 @@ def create_shipment(request: dict[str,Any]) -> dict[str,int]:
     id = request.get('id', None)
     shipments[id] = {'content': request['content'], 'status': request['status'], 'weight': request['weight']}
     return {"id": id}
+
+@app.put('/shipment/{id}')
+def update_shipments(content:str,status:str,weight:str ,id: int | None = None) -> dict[str,Any]:
+    if id is None or id not in shipments:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
+    data = {
+        'content': content, 
+        'status': status, 
+        'weight': weight
+    }
+    shipments[id].update(data)
+    return shipments[id]
+
+@app.patch('/shipment/{id}')
+def patch_shipments(content:str | None = None,status:str | None = None,weight:str | None = None,id: int | None = None) -> dict[str,Any]:
+    if id is None or id not in shipments:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
+    if content:
+        shipments[id]['content'] = content
+    if status:
+        shipments[id]['status'] = status
+    if weight:
+        shipments[id]['weight'] = weight
+    return shipments[id]

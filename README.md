@@ -69,8 +69,21 @@ Request:
     "status": "Delivered",
     "weight": "3kg"
 }
-
 Response:
 {
     "id": 1007
+}
+5. PUT replace shipment details
+Request:
+PUT /shipment/1001?content=Jibin&status=Cancel&weight=45
+Response:
+{"content":"Jibin","status":"Cancel","weight":"45"}
+6. PATCH update shipment details
+Request:
+PATCH /shipment/1001?status=Placed
+Response:
+{
+    "content": "Electronics - Mobile Phones",
+    "status": "Placed",
+    "weight": "12kg"
 }
