@@ -72,3 +72,11 @@ def patch_shipments(content:str | None = None,status:str | None = None,weight:st
     if weight:
         shipments[id]['weight'] = weight
     return shipments[id]
+
+@app.delete('/shipment/{id}')
+def delete_shipments(id:int):
+    if id is None or id not in shipments:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
+    pop_id = shipments.pop(id)
+    return pop_id
+  

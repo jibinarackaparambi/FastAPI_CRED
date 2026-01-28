@@ -87,3 +87,12 @@ Response:
     "status": "Placed",
     "weight": "12kg"
 }
+7. DELETE delete shipment details
+Request:
+DELETE /shipment/1002
+Response:
+{
+    "content": "Books - Educational",
+    "status": "Delivered",
+    "weight": "8kg"
+}
