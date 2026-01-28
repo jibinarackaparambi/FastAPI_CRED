@@ -37,8 +37,14 @@ def get_shipments(id: int | None = None) -> dict[str,Any]:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
     return shipments[id]
 
-app.get('/shipment/{id}')
+@app.get('/shipment/{id}')
 def get_shipments_path_variable(id: int | None = None) -> dict[str,Any]:
     if id is None or id not in shipments:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
     return shipments[id]
+
+@app.post('/shipment')
+def create_shipment(request: dict[str,Any]) -> dict[str,int]:
+    id = request.get('id', None)
+    shipments[id] = {'content': request['content'], 'status': request['status'], 'weight': request['weight']}
+    return {"id": id}

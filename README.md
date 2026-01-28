@@ -59,3 +59,18 @@ If the shipment ID is missing or invalid:
 {
   "detail": "Item not found"
 }
+4. POST shipment details
+Request:
+POST /shipment
+Request:
+{
+    "id": 1007,
+    "content": "Books - Noval",
+    "status": "Delivered",
+    "weight": "3kg"
+}
+
+Response:
+{
+    "id": 1007
+}
