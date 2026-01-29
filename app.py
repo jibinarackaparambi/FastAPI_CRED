@@ -1,5 +1,9 @@
 from typing import Any
+
 from fastapi import FastAPI, HTTPException, status
+
+from schemas import CreateShipments, ReadShipmensts,UpdateShipments,PatchShipments
+
 
 app = FastAPI()
 
@@ -7,70 +11,65 @@ shipments = {
   1001: {
     "content": "Electronics - Mobile Phones",
     "status": "In Transit",
-    "weight": "12kg"
+    "weight": "12"
   },
   1002: {
     "content": "Books - Educational",
     "status": "Delivered",
-    "weight": "8kg"
+    "weight": "8"
   },
   1003: {
     "content": "Clothing - Winter Jackets",
     "status": "Pending Pickup",
-    "weight": "15kg"
+    "weight": "15"
   },
   1004: {
     "content": "Furniture - Office Chairs",
     "status": "In Transit",
-    "weight": "25kg"
+    "weight": "25"
   },
   1005: {
     "content": "Groceries - Packaged Food",
     "status": "Delivered",
-    "weight": "20kg"
+    "weight": "20"
   }
 }
 
-@app.get("/shipment")
-def get_shipments(id: int | None = None) -> dict[str,Any]:
+@app.get("/shipment", response_model=ReadShipmensts)
+def get_shipments(id: int | None = None):
     if id is None or id not in shipments:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
     return shipments[id]
 
-@app.get('/shipment/{id}')
-def get_shipments_path_variable(id: int | None = None) -> dict[str,Any]:
+@app.get('/shipment/{id}', response_model=ReadShipmensts)
+def get_shipments_path_variable(id: int | None = None):
     if id is None or id not in shipments:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
     return shipments[id]
 
-@app.post('/shipment')
-def create_shipment(request: dict[str,Any]) -> dict[str,int]:
-    id = request.get('id', None)
-    shipments[id] = {'content': request['content'], 'status': request['status'], 'weight': request['weight']}
-    return {"id": id}
+@app.post('/shipment', response_model=None)
+def create_shipment(request: CreateShipments):
+    id = max(shipments.keys()) + 1
+    shipments[id] = {
+        **request.model_dump()
+    }
+    return {"shipment_id": id}
 
-@app.put('/shipment/{id}')
-def update_shipments(content:str,status:str,weight:str ,id: int | None = None) -> dict[str,Any]:
+@app.put('/shipment/{id}',response_model=ReadShipmensts)
+def update_shipments(shipment: UpdateShipments,id: int | None = None) -> dict[str,Any]:
     if id is None or id not in shipments:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
     data = {
-        'content': content, 
-        'status': status, 
-        'weight': weight
+        **shipment.model_dump()
     }
     shipments[id].update(data)
     return shipments[id]
 
-@app.patch('/shipment/{id}')
-def patch_shipments(content:str | None = None,status:str | None = None,weight:str | None = None,id: int | None = None) -> dict[str,Any]:
+@app.patch('/shipment/{id}', response_model=None)
+def patch_shipments(shipment: PatchShipments, id: int | None = None):
     if id is None or id not in shipments:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Item not found")
-    if content:
-        shipments[id]['content'] = content
-    if status:
-        shipments[id]['status'] = status
-    if weight:
-        shipments[id]['weight'] = weight
+    shipments[id].update(**shipment.model_dump(exclude_none=True))
     return shipments[id]
 
 @app.delete('/shipment/{id}')
