@@ -24,4 +24,4 @@ class UpdateShipments(BaseShipments):
 class PatchShipments(BaseModel):
     content: str | None = Field(max_length=30,default=None)
     weight: float | None = Field(le=40,ge=1,default=None)
-    status: ShipmetStatus | None = Field(default="placed")
+    status: ShipmetStatus | None = Field(default=None)
