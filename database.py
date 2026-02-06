@@ -1,6 +1,6 @@
 import sqlite3
 from typing import Any
-from schemas import CreateShipments,UpdateShipments
+from api.schema.schemas import CreateShipments,UpdateShipments
 
 class Shipment:
     def __init__(self):
