@@ -21,4 +21,4 @@ class Seller(SQLModel,table=True):
     id: int = Field(default=None,primary_key=True)
     name: str
     email: EmailStr
-    password_has: str
+    password_hash: str = Field(max_length=255, sa_column_kwargs={'nullable': False})
