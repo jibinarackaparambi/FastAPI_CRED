@@ -7,10 +7,10 @@ from sqlmodel import SQLModel,Session
 from fastapi import Depends
 
 from .models import Shipment
-from config import settings
+from config import db_settings
 
 engine = create_async_engine(
-    url= settings.POSTGRES_URL,
+    url= db_settings.POSTGRES_URL,
     echo=True,
     # connect_args={"check_same_thread":False}
     )
