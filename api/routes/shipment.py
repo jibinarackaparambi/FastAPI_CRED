@@ -1,17 +1,19 @@
-from typing import Any
-from fastapi import APIRouter, HTTPException,status
+from typing import Annotated, Any
+from fastapi import APIRouter, Depends, HTTPException,status
 
 from api.schema.schemas import CreateShipments, PatchShipments, ReadShipmensts, UpdateShipments
 from database.models import Shipment
+from database.redis import add_jti_to_blacklist
 from database.session import session_db
 from service.shipment_service import ShipmentService
+from utils import get_access_token, seller_dep
 
 
 router = APIRouter(tags=["Shipment"])
 
 
 @router.get("/shipment")
-async def get_shipments(session:session_db,id: int | None = None) -> Shipment:
+async def get_shipments(seller: seller_dep,session:session_db,id: int | None = None) -> Shipment:
     shipment = await ShipmentService(session).get(id)
     
     if id is None or shipment is None:
@@ -21,7 +23,9 @@ async def get_shipments(session:session_db,id: int | None = None) -> Shipment:
 
 
 @router.post('/shipment')
-async def create_shipment(request: CreateShipments,session: session_db) -> Shipment:
+async def create_shipment(request: CreateShipments,session: session_db, token_data: Annotated[dict,Depends(get_access_token)]) -> Shipment:
+    await add_jti_to_blacklist(token_data['jti'])
+    
     shipment = await ShipmentService(session).add(request)
     return shipment
 

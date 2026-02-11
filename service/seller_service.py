@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from api.schema.seller import CreateSeller, ReadSeller
 from database.models import Seller
 from config import security_settings
+from utils import generate_access_token
 
 pwd_context = CryptContext(schemes=["argon2"],deprecated='auto')
 
@@ -33,6 +34,7 @@ class SellerService:
             Select(Seller).where(Seller.email==email)
             )
         sellar = result.scalar()
+        self.session.get(Seller,sellar.id)
         verify_pass = pwd_context.verify(
             password,
             sellar.password_hash
@@ -40,17 +42,12 @@ class SellerService:
         if sellar is None or not verify_pass:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Email or password is incorrect")
         
-        token = jwt.encode(
-            payload={
-                "user":{
-                    "name":sellar.name,
-                    "email":sellar.email
-                },
-                "exp": datetime.now() + timedelta(days=1)
-            },
-            algorithm=security_settings.JWT_ALGORITHM,
-            key=security_settings.JWT_SECRET
-        )
+        token = generate_access_token(data={
+            "user":{
+                "name": sellar.name,
+                'id': sellar.id
+            }
+        })
 
         return token
         

@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings,SettingsConfigDict
 
+
 _basic_config = SettingsConfigDict(
         env_file='./.env',
         env_ignore_empty=True,
@@ -11,7 +12,8 @@ class DatabaseSettings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    
+    REDIS_HOST: str
+    REDIS_PORT: str
 
     model_config = _basic_config
 

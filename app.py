@@ -9,3 +9,4 @@ async def lifespan_handler(app:FastAPI):
 
 app = FastAPI(lifespan=lifespan_handler)
 app.include_router(master_router)
+
