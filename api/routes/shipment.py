@@ -24,10 +24,15 @@ async def get_shipments(session:session_db,seller_db: current_seller_dep,id: int
 
 @router.post('/shipment')
 async def create_shipment(request: CreateShipments,session: session_db, seller_db: current_seller_dep) -> Shipment:
-    print(seller_db)
+    # payload = Shipment(**request.model_dump(exclude_none=True,owner_id=seller_db.id))
     # await add_jti_to_blacklist(current_seller_dep['jti'])
+    payload_dict = request.model_dump(exclude_none=True)
+    payload_dict["owner_id"] = seller_db.id
     
-    shipment = await ShipmentService(session).add(request)
+    # Create Shipment instance
+    payload = Shipment(**payload_dict)
+    
+    shipment = await ShipmentService(session).add(payload)
     return shipment
 
 @router.put('/shipment/{id}')

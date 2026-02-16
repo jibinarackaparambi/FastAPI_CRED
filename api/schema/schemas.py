@@ -11,6 +11,7 @@ class BaseShipments(BaseModel):
     
 class CreateShipments(BaseShipments):
     status: ShipmetStatus
+    owner_id: int = Field(default=None)
 
 class ReadShipmensts(BaseShipments):
     pass

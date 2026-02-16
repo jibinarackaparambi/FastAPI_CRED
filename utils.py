@@ -37,12 +37,10 @@ def decode_access_token(token:str) -> dict:
     except jwt.PyJWKError:
         return None
     except Exception as e:
-        print("hiiiiiiiii")
         return None
     
 
 async def get_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> dict[str,Any]:
-    print("2"*100)
     data = decode_access_token(token=token)
     is_blacklisted = await is_jti_blacklisted(data['jti'])
     if data is None or is_blacklisted:
@@ -51,7 +49,6 @@ async def get_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> dic
     return data
 
 async def current_seller(token_data:Annotated[dict, Depends(get_access_token)], session: session_db):
-    print("1"*100)
     return await session.get(Seller, token_data['user']['id'])
 
 
