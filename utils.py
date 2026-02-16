@@ -55,4 +55,4 @@ async def current_seller(token_data:Annotated[dict, Depends(get_access_token)], 
     return await session.get(Seller, token_data['user']['id'])
 
 
-seller_dep = Annotated[Seller, Depends(current_seller)]
+current_seller_dep = Annotated[Seller, Depends(current_seller)]
