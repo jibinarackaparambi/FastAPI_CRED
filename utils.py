@@ -5,7 +5,7 @@ import jwt
 from uuid import uuid4
 from  config import security_settings
 from core.security import oauth2_scheme
-from database.models import Seller
+from database.models import DeliveryPartner, Seller
 from database.redis import is_jti_blacklisted
 from database.session import session_db
 
@@ -51,5 +51,10 @@ async def get_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> dic
 async def current_seller(token_data:Annotated[dict, Depends(get_access_token)], session: session_db):
     return await session.get(Seller, token_data['user']['id'])
 
+async def current_delivery_prtner(token_data:Annotated[dict, Depends(get_access_token)], session: session_db):
+    return await session.get(DeliveryPartner, token_data['user']['id'])
+
+
 
 current_seller_dep = Annotated[Seller, Depends(current_seller)]
+current_delivery_partner_dep = Annotated[DeliveryPartner, Depends(current_delivery_prtner)]
